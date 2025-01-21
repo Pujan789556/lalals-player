@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Typography, List, ListItem, ListItemText, Box, IconButton, Slider, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Typography, List, ListItem, ListItemText, Box, Paper, Grid } from '@mui/material';
 import MusicPlayer from './component/player';
 
 type Music = {
@@ -33,7 +33,7 @@ const musicList: Music[] = [
 ];
 
 const MusicPage = () => {
-  const [currentSong, setCurrentSong] = useState<Music | null>(musicList[0]);
+  const [currentSong, setCurrentSong] = useState<Music | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -79,20 +79,50 @@ const MusicPage = () => {
   };
 
   return (
-    <Box>
-      <MusicPlayer
-        currentSong={currentSong}
-        isPlaying={isPlaying}
-        progress={progress}
-        isHovered={isHovered}
-        onPlayPause={handlePlayPause}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        onSeek={handleSeek}
-        onClose={handleClose}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
+    <Box sx={{ padding: 2 }}>
+      <Grid container spacing={2}>
+        {/* Song List Section */}
+        <Grid item xs={12} md={4}>
+          <Paper elevation={3} sx={{ padding: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Music List
+            </Typography>
+            <List>
+              {musicList.map((song) => (
+                <ListItem
+                  key={song.id}
+                  onClick={() => {
+                    setCurrentSong(song);
+                    setIsPlaying(false);
+                    setProgress(0);
+                  }}
+                >
+                  <ListItemText primary={song.name} secondary={`${song.duration} seconds`} />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Grid>
+
+        {/* Music Player Section */}
+        <Grid item xs={12} md={8}>
+          {currentSong && (
+            <MusicPlayer
+              currentSong={currentSong}
+              isPlaying={isPlaying}
+              progress={progress}
+              isHovered={isHovered}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onPlayPause={handlePlayPause}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              onSeek={handleSeek}
+              onClose={handleClose}
+            />
+          )}
+        </Grid>
+      </Grid>
     </Box>
   );
 };
